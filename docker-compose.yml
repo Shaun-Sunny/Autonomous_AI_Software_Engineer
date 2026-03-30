@@ -1,0 +1,24 @@
+services:
+  orchestrator:
+    image: autonomous-api-engineer:local
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./generated_apps:/app/generated_apps
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - prometheus
+
+  prometheus:
+    image: prom/prometheus:latest
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "9090:9090"

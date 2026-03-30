@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Autonomous API Engineer</title>
+  <style>
+    :root {
+      --bg: #f1efe9;
+      --paper: #fffdf8;
+      --ink: #1f2937;
+      --muted: #5b6472;
+      --brand: #0e7490;
+      --accent: #b45309;
+      --ok: #166534;
+      --err: #991b1b;
+      --warn: #92400e;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+      color: var(--ink);
+      background: radial-gradient(circle at 20% 10%, #fef3c7, transparent 30%),
+                  radial-gradient(circle at 80% 20%, #bae6fd, transparent 35%),
+                  var(--bg);
+      min-height: 100vh;
+    }
+    .wrap {
+      max-width: 980px;
+      margin: 2rem auto;
+      padding: 1.25rem;
+    }
+    .card {
+      background: var(--paper);
+      border: 1px solid #d6d3d1;
+      border-radius: 16px;
+      box-shadow: 0 12px 35px rgba(15, 23, 42, 0.08);
+      padding: 1.25rem;
+      animation: fadeUp .45s ease;
+    }
+    h1 {
+      margin: 0 0 .6rem;
+      font-size: clamp(1.5rem, 3vw, 2.2rem);
+      letter-spacing: .02em;
+    }
+    p { color: var(--muted); margin-top: 0; }
+    .row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: .75rem;
+    }
+    input {
+      width: 100%;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      padding: .8rem .9rem;
+      font-size: 1rem;
+      background: #fff;
+    }
+    button {
+      border: 0;
+      border-radius: 10px;
+      padding: .8rem 1.1rem;
+      font-size: .95rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--brand), #0f766e);
+      color: #fff;
+      cursor: pointer;
+      transition: transform .15s ease;
+    }
+    button:hover { transform: translateY(-1px); }
+    button:disabled { opacity: .6; cursor: not-allowed; }
+    .terminal {
+      margin-top: 1rem;
+      background: #0f172a;
+      color: #e2e8f0;
+      border-radius: 12px;
+      min-height: 320px;
+      max-height: 420px;
+      overflow: auto;
+      padding: .9rem;
+      font-family: "IBM Plex Mono", "Consolas", monospace;
+      font-size: .88rem;
+      line-height: 1.45;
+      border: 1px solid #1e293b;
+    }
+    .line { white-space: pre-wrap; margin-bottom: .35rem; }
+    .info { color: #a5f3fc; }
+    .warning { color: #fde68a; }
+    .error { color: #fecaca; }
+    .status {
+      margin-top: .85rem;
+      font-weight: 600;
+    }
+    .ok { color: var(--ok); }
+    .err { color: var(--err); }
+    a { color: var(--brand); font-weight: 700; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @media (max-width: 700px) {
+      .row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="card">
+      <h1>Autonomous API Engineer</h1>
+      <p>Describe the API you want. The system will plan, generate, execute, debug, and deploy autonomously.</p>
+      <form id="generate-form" class="row">
+        <input id="prompt" type="text" required value="Build a FastAPI CRUD app for a Todo system with title and status" />
+        <button id="submit-btn" type="submit">Generate API</button>
+      </form>
+      <div id="status" class="status">Idle</div>
+      <div id="terminal" class="terminal" aria-live="polite"></div>
+    </section>
+  </main>
+  <script src="/app.js"></script>
+</body>
+</html>

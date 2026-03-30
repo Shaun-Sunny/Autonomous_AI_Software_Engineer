@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+sqlalchemy
+psycopg[binary]
+pydantic
+httpx
+python-dotenv
+prometheus-client
+sse-starlette
+pytest
+pytest-asyncio
