@@ -33,9 +33,10 @@ jobs:
         run: docker build -t autonomous-api-engineer:ci .
 
       - name: Deploy to Railway
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/main' && secrets.RAILWAY_TOKEN != ''
         env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_API_KEY }}
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: |
           npm i -g @railway/cli
+          railway whoami
           railway up --service orchestrator
