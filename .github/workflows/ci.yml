@@ -33,10 +33,14 @@ jobs:
         run: docker build -t autonomous-api-engineer:ci .
 
       - name: Deploy to Railway
-        if: github.ref == 'refs/heads/main' && secrets.RAILWAY_TOKEN != ''
+        if: github.ref == 'refs/heads/main'
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         run: |
+          if [ -z "$RAILWAY_TOKEN" ]; then
+            echo "RAILWAY_TOKEN is not configured; skipping Railway deploy."
+            exit 0
+          fi
           npm i -g @railway/cli
           railway whoami
           railway up --service orchestrator
