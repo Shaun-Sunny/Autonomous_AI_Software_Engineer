@@ -52,14 +52,6 @@ flowchart LR
    - `http://localhost:8000`
    - `http://localhost:9090`
 
-## API Endpoints
-
-- `POST /generate`
-- `GET /runs/{run_id}/status`
-- `GET /runs/{run_id}/logs` (SSE)
-- `GET /runs`
-- `GET /metrics`
-
 ## Environment Variables
 
 Defined in `.env.example`:
@@ -73,6 +65,54 @@ Defined in `.env.example`:
 - `RAILWAY_API_KEY`
 - `RAILWAY_PROJECT_ID`
 - `PROMETHEUS_PORT`
+- `KEEP_ALIVE_MINUTES` (default: 30) — Controls how long Railway deployments stay active before auto-deletion
+
+## Cost Management
+
+The system includes automatic cost-protection mechanisms to prevent unnecessary spending:
+
+### Railway Auto-Deletion
+
+After each successful deployment, the system automatically schedules the Railway service for deletion after **30 minutes** (configurable via `KEEP_ALIVE_MINUTES` environment variable). This prevents accidental $5 credit drain from idle deployments.
+
+**How it works:**
+- Every deployment is tracked with a `scheduled_deletion_at` timestamp
+- A background task deletes the service when the timer expires
+- The frontend displays a live countdown showing minutes remaining until deletion
+- You can extend the lifetime by adjusting `KEEP_ALIVE_MINUTES` in `.env` and restarting
+
+**Example configurations:**
+- `KEEP_ALIVE_MINUTES=30` — Delete after 30 minutes (default)
+- `KEEP_ALIVE_MINUTES=120` — Delete after 2 hours
+- `KEEP_ALIVE_MINUTES=1440` — Delete after 24 hours
+
+### Manual Shutdown
+
+The frontend includes a red **"Shutdown All"** button that immediately deletes all active Railway deployments. This allows you to:
+- Clean up after testing
+- Emergency stop to prevent credit usage
+- Manually control cost without waiting for auto-deletion
+
+### Docker Cleanup
+
+- Local test containers are automatically removed after health checks pass
+- On application shutdown (SIGTERM/SIGINT), all containers started by this session are cleaned up
+- No orphaned Docker containers are left behind
+
+### Other Services
+
+- **Supabase**: Free tier is persistent with no time limits
+- **Groq**: Pay-per-token model with no idle costs
+- **GitHub**: Repositories remain free and persistent
+
+## API Endpoints
+
+- `POST /generate` — Generate new API
+- `GET /runs/{run_id}/status` — Check run status and deployment countdown
+- `GET /runs/{run_id}/logs` (SSE) — Stream live logs
+- `GET /runs` — List all runs with deployment info
+- `POST /shutdown` — Delete all active Railway deployments
+- `GET /metrics` — Prometheus metrics
 
 ## CI/CD
 
@@ -82,6 +122,10 @@ GitHub Actions workflow in `.github/workflows/ci.yml`:
 - Runs pytest
 - Builds Docker image
 - Deploys to Railway on `main`
+
+Required GitHub Actions secret for deployment:
+
+- `RAILWAY_TOKEN` (Railway CLI/account token used by `railway up`)
 
 ## Demo
 
